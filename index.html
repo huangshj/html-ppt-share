@@ -81,9 +81,130 @@
         .reveal .slides section::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 4px; }
         .reveal .slides section::-webkit-scrollbar-thumb { background: #3B82F6; border-radius: 4px; }
         .reveal .slides section::-webkit-scrollbar-thumb:hover { background: #10B981; }
+        
+        /* 密码保护样式 */
+        #password-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0A1628 0%, #1e3a5f 100%);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+        }
+        #password-box {
+            background: rgba(30, 58, 95, 0.9);
+            padding: 40px 50px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            text-align: center;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        #password-box h2 {
+            color: #3B82F6;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+        }
+        #password-box p {
+            color: #94a3b8;
+            margin-bottom: 25px;
+            font-size: 0.9em;
+        }
+        #password-input {
+            width: 280px;
+            padding: 14px 18px;
+            font-size: 16px;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            background: #0f172a;
+            color: #fff;
+            text-align: center;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+        }
+        #password-input:focus {
+            outline: none;
+            border-color: #3B82F6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        #password-btn {
+            margin-top: 20px;
+            padding: 12px 40px;
+            font-size: 16px;
+            background: linear-gradient(135deg, #3B82F6 0%, #10B981 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        #password-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+        #password-error {
+            color: #EF4444;
+            margin-top: 15px;
+            font-size: 0.85em;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        #password-error.show {
+            opacity: 1;
+        }
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
+    <!-- 密码保护遮罩 -->
+    <div id="password-overlay">
+        <div id="password-box">
+            <h2>🔒 访问受限</h2>
+            <p>请输入密码查看演示文稿</p>
+            <input type="password" id="password-input" placeholder="请输入密码" autocomplete="off">
+            <br>
+            <button id="password-btn" onclick="checkPassword()">进入演示</button>
+            <div id="password-error">密码错误，请重试</div>
+        </div>
+    </div>
+    
+    <script>
+        // 密码验证
+        const CORRECT_PASSWORD = 'meiya@2026';
+        
+        function checkPassword() {
+            const input = document.getElementById('password-input');
+            const error = document.getElementById('password-error');
+            const overlay = document.getElementById('password-overlay');
+            
+            if (input.value === CORRECT_PASSWORD) {
+                overlay.classList.add('hidden');
+                sessionStorage.setItem('ppt_auth', 'true');
+            } else {
+                error.classList.add('show');
+                input.value = '';
+                input.focus();
+                setTimeout(() => error.classList.remove('show'), 3000);
+            }
+        }
+        
+        // 回车键提交
+        document.getElementById('password-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkPassword();
+        });
+        
+        // 检查是否已验证（刷新页面保持登录状态）
+        if (sessionStorage.getItem('ppt_auth') === 'true') {
+            document.getElementById('password-overlay').classList.add('hidden');
+        }
+    </script>
     <div class="reveal">
         <div class="slides">
             
@@ -412,7 +533,7 @@
             <!-- Slide 9: Project Overview -->
             <section>
                 <h2>项目概述</h2>
-                <p style="color: #94a3b8; margin-bottom: 15px;">电子数据取证数据转换与智能分析平台 V1.1.00706</p>
+                <p style="color: #94a3b8; margin-bottom: 15px;">公安电子数据取证数据转换与智能分析平台 V1.1.00706</p>
                 <div class="two-column">
                     <div class="card">
                         <h4>核心定位</h4>
